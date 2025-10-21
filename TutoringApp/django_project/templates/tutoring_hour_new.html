@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Add Tutoring Hours{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Add New Tutoring Hours</h2>
+    
+    <div class="alert alert-info mb-4">
+        <h5>Time Format Instructions:</h5>
+        <p>Please enter times in <strong>24-hour format</strong>:</p>
+        <ul class="mb-0">
+            <li>8:00 AM = <strong>08:00</strong></li>
+            <li>12:00 PM (noon) = <strong>12:00</strong></li>
+            <li>4:00 PM = <strong>16:00</strong></li>
+            <li>5:00 PM = <strong>17:00</strong></li>
+            <li>6:30 PM = <strong>18:30</strong></li>
+        </ul>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">Save Hours</button>
+        <a href="{% url 'tutor_detail' user.pk %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock content %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}{{ tutor.username }} - Tutor Profile{% endblock title %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <h2>{{ tutor.get_full_name|default:tutor.username }}</h2>
+            
+            {% if tutor.classes_can_tutor %}
+            <div class="mb-3">
+                <h5>Classes Available for Tutoring:</h5>
+                <p class="text-muted">{{ tutor.classes_can_tutor }}</p>
+            </div>
+            {% endif %}
+            
+            <h4>Available Tutoring Hours</h4>
+            {% if tutoring_hours %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Location</th>
+                                {% if user == tutor %}
+                                <th>Actions</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for hour in tutoring_hours %}
+                            <tr>
+                                <td>{{ hour.get_day_of_week_display }}</td>
+                                <td>{{ hour.start_time|time:"g:i A" }} - {{ hour.end_time|time:"g:i A" }}</td>
+                                <td>{{ hour.location }}</td>
+                                {% if user == tutor %}
+                                <td>
+                                    <a href="{% url 'hours_delete' hour.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-muted">No tutoring hours scheduled yet.</p>
+            {% endif %}
+            
+            {% if user == tutor %}
+            <div class="mt-3">
+                <a href="{% url 'hours_new' %}" class="btn btn-primary">Add Tutoring Hours</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-secondary">← Back to Home</a>
+    </div>
+</div>
+{% endblock content %}

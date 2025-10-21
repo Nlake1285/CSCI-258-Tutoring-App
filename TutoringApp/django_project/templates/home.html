@@ -6,14 +6,58 @@
 {% block content %}
 {% if user.is_authenticated %}
 <p>Hi {{ user.username }}! You are {{ user.age }} years old.</p>
+<div class="mb-3">
+    <a href="{% url 'post_new' %}" class="btn btn-primary">+ Add New Post</a>
+    {% if user.is_tutor %}
+    <a href="{% url 'hours_new' %}" class="btn btn-success">+ Add Tutoring Hours</a>
+    <a href="{% url 'tutor_detail' user.pk %}" class="btn btn-info">My Profile</a>
+    {% endif %}
+</div>
 <form action="{% url 'logout' %}" method="post">
     {% csrf_token %}
-    <button type="submit">Log Out</button>
+    <button type="submit" class="btn btn-outline-secondary">Log Out</button>
 </form>
 {% else %}
 <p>You are not logged in</p>
-<a href="{% url 'login' %}">Log In</a> |
-<a href="{% url 'signup' %}">Sign Up</a>
+<a href="{% url 'login' %}" class="btn btn-primary">Log In</a>
+<a href="{% url 'signup' %}" class="btn btn-secondary">Sign Up</a>
+{% endif %}
+
+<h2 class="mt-4">CS Fishbowl Tutoring Hours</h2>
+
+{% if tutoring_hours %}
+<div class="table-responsive mb-4">
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Tutor</th>
+                <th>Day</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Classes Available</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for hour in tutoring_hours %}
+            <tr>
+                <td>
+                    <a href="{% url 'tutor_detail' hour.tutor.pk %}" class="text-decoration-none">
+                        <strong>{{ hour.tutor.get_full_name|default:hour.tutor.username }}</strong>
+                    </a>
+                </td>
+                <td>{{ hour.get_day_of_week_display }}</td>
+                <td>{{ hour.start_time|time:"g:i A" }} - {{ hour.end_time|time:"g:i A" }}</td>
+                <td>{{ hour.location }}</td>
+                <td>{{ hour.tutor.classes_can_tutor|default:"Not specified" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-info">
+    <p>No tutoring hours scheduled yet.</p>
+</div>
 {% endif %}
 {% if posts %}
     <h3>Recent Posts</h3>
