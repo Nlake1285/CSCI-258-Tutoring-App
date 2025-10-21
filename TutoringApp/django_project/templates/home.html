@@ -15,4 +15,20 @@
 <a href="{% url 'login' %}">Log In</a> |
 <a href="{% url 'signup' %}">Sign Up</a>
 {% endif %}
+{% if posts %}
+    <h3>Recent Posts</h3>
+    {% for post in posts %}
+    <div class="post-entry mb-4 p-3 border rounded">
+        <h4><a href="{{ post.get_absolute_url }}" class="text-decoration-none">{{ post.title }}</a></h4>
+        <p class="text-muted mb-2"><small>By {{ post.author }}</small></p>
+        <p>{{ post.body|truncatewords:30 }}</p>
+        <a href="{{ post.get_absolute_url }}" class="btn btn-sm btn-outline-primary">Read More</a>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="alert alert-info">
+        <h4>Welcome to the Tutoring App!</h4>
+        <p>No posts yet. {% if user.is_authenticated %}<a href="{% url 'post_new' %}">Be the first to add one!</a>{% else %}<a href="{% url 'login' %}">Login</a> to add the first post!{% endif %}</p>
+    </div>
+{% endif %}
 {% endblock content %}
